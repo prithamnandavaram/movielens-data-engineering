@@ -271,7 +271,7 @@ async function renderChartB() {
 }
 
 // --------------------------------------------------------------------------
-// Question (c): Most Popular Tag Given for Each Genre
+// Question (c): Most Popular Tags Given for Each Genre (top 5)
 // --------------------------------------------------------------------------
 async function renderTableC() {
   const data = await fetchAPI('/api/tags/genre');
@@ -281,13 +281,29 @@ async function renderTableC() {
     return;
   }
 
-  tbody.innerHTML = data.map(item => `
-    <tr>
-      <td><strong>${item.genre}</strong></td>
-      <td><span class="section-badge font-mono" style="font-size: 0.85rem;">#${item.topTag}</span></td>
-      <td style="text-align: right;" class="font-mono text-muted">${item.count.toLocaleString()}</td>
-    </tr>
-  `).join('');
+  tbody.innerHTML = data.map(item => {
+    // Use topTags array (top 5); fall back to topTag if topTags missing
+    const tags = (item.topTags && item.topTags.length > 0)
+      ? item.topTags
+      : [{ tag: item.topTag, count: item.count }];
+
+    // Render each tag as a pill; first pill (rank #1) is highlighted
+    const pillsHTML = tags.map((t, i) => {
+      const isTop = i === 0;
+      const style = isTop
+        ? 'background:rgba(124,92,255,0.18);color:#a78bff;border:1px solid rgba(124,92,255,0.4);'
+        : 'background:rgba(138,148,166,0.1);color:#8a94a6;border:1px solid rgba(138,148,166,0.2);';
+      return `<span class="font-mono" style="display:inline-block;padding:2px 8px;border-radius:20px;font-size:0.78rem;margin:2px 2px 2px 0;${style}">${isTop ? '★ ' : ''}${t.tag} <span style="opacity:0.6;">${t.count.toLocaleString()}</span></span>`;
+    }).join('');
+
+    return `
+      <tr>
+        <td><strong>${item.genre}</strong></td>
+        <td style="line-height:2;">${pillsHTML}</td>
+        <td style="text-align:right;" class="font-mono text-muted">${item.count.toLocaleString()}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
 // --------------------------------------------------------------------------
