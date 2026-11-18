@@ -43,70 +43,27 @@ This repository contains an end-to-end Data Engineering and Analytics platform b
 
 ## 🏗️ Architecture & System Flowcharts
 
-The platform is designed across 4 clean, modular tiers. GitHub natively renders each interactive diagram below:
+Concise data-to-dashboard and request flows. Editable TikZ sources, vector PDFs,
+SVGs and rebuild instructions are in [docs/diagrams](docs/diagrams/README.md).
+These figures show logical steps, not latency, security or atomicity guarantees.
 
-### 1. Data Engineering & ETL Pipeline (`load_data.py`)
-*Ingests 6 raw CSVs, extracts release years, aggregates 25M ratings in 5M chunks, and indexes collections in MongoDB.*
+### System architecture
+![MovieLens CSV files through MongoDB and Flask to the browser](docs/diagrams/system-architecture.svg)
 
-```mermaid
-flowchart LR
-    A["📦 6 Raw CSV Files<br/>(MovieLens 25M)"] --> B["🧹 Data Cleaning<br/>• Regex year extraction<br/>• Title & genre normalization"]
-    B --> C["⚡ Aggregation Engine<br/>• 25M ratings in 5M chunks<br/>• Top-5 genome tags<br/>• Top tags per genre"]
-    C --> D[("🗄️ MongoDB Database<br/>• movies<br/>• genre_tags<br/>• ratings & users")]
-```
+### Data ingestion
+![Read CSV inputs, clean and aggregate, write MongoDB](docs/diagrams/data-ingestion.svg)
 
-### 2. Role-Based Access Control (RBAC) Architecture
-*Enforces secure separation of privileges between Regular Users and Administrators.*
+### API requests
+![JavaScript requests chart data from Flask and receives JSON](docs/diagrams/api-requests.svg)
 
-```mermaid
-flowchart TD
-    START(["User Visits Website"]) --> AUTH{"Logged In?"}
-    AUTH -- No --> LOGIN["/login or /register"]
-    LOGIN --> CHECK_ROLE
-    AUTH -- Yes --> CHECK_ROLE{"User Role?"}
+### Genre releases by year
+![Filter year, expand genres, then count and sort](docs/diagrams/genre-releases.svg)
 
-    CHECK_ROLE -- "Regular User" --> USER_VIEW["🎬 Main Dashboard (/)<br/>• Search movies<br/>• View all 7 charts<br/>• Submit & modify ratings"]
-    CHECK_ROLE -- "Administrator" --> ADMIN_VIEW["🛡️ Admin Console (/admin)<br/>• Database KPI cards<br/>• Toggle user roles<br/>• Live audit log"]
-```
+### Rating updates
+![Validate request, save current rating, update movie summary](docs/diagrams/rating-updates.svg)
 
-### 3. Analytics Engine (Lab Questions a–g)
-*Maps MongoDB pre-aggregated collections to REST API endpoints and Chart.js visuals.*
-
-```mermaid
-flowchart LR
-    subgraph UI["Visual Dashboard Output"]
-        QA["(a) Top-5 Relevance Tags (Bar Chart)"]
-        QB["(b) Top 10 Movies Overall & Yearly (Bar Chart)"]
-        QC["(c) Most Popular Tags per Genre (Pill Table)"]
-        QD["(d) Movie Rating Distribution (Histogram)"]
-        QE["(e) Total Rating Distribution (Bucket Chart)"]
-        QF["(f) Highest Genre Releases by Year (Bar Chart)"]
-        QG["(g) Genre-wise Movie Coverage (Doughnut Chart)"]
-    end
-
-    subgraph API["Flask REST Endpoints"]
-        EA["/api/tags/top/:id"] --> QA
-        EB["/api/movies/top_rated"] --> QB
-        EC["/api/tags/genre"] --> QC
-        ED["/api/ratings/distribution/:id"] --> QD
-        EE["/api/ratings/total_distribution"] --> QE
-        EF["/api/genres/releases"] --> QF
-        EG["/api/genres/coverage"] --> QG
-    end
-
-    DB[("MongoDB Collections")] --> API
-```
-
-### 4. Real-Time Rating Modification Feedback Loop (Regulation 4)
-*Enables users to rate movies in real-time, atomically updating MongoDB and refreshing charts live.*
-
-```mermaid
-flowchart TD
-    U1["👤 User selects 0.5–5.0 ★ on Dashboard"] --> U2["🚀 POST /api/ratings/submit"]
-    U2 --> U3["💾 Save user vote in ratings collection"]
-    U2 --> U4["⚡ Recalculate movie document in MongoDB<br/>• New average rating<br/>• Increment ratingCount<br/>• Shift rating distribution histogram"]
-    U4 --> U5["✨ UI Chart (d) & Movie Banner Update Instantly<br/>(No page refresh required)"]
-```
+The rating and movie-summary writes are separate operations, not one transaction.
+See the [diagram scope notes](docs/diagrams/README.md#scope-and-source) for details.
 
 ### Technology Stack
 - **Data Pipeline:** Python 3, `pandas`, `pymongo`

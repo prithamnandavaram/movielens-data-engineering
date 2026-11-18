@@ -1,0 +1,14 @@
+% Shared flat Beamer-blue style; widths include padding.
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\definecolor{beamerblue}{RGB}{51,51,178}
+\tikzset{
+block/.style={rectangle,draw=beamerblue,fill=beamerblue!9,line width=.6pt,
+minimum height=17mm,minimum width=34mm,text width=30mm,inner xsep=2mm,
+inner ysep=1mm,align=center,text=black,font=\sffamily\fontsize{8}{9.5}\selectfont},
+architecture/.style={block,minimum width=27mm,text width=23mm},
+flow/.style={-{Stealth[length=1.6mm,width=1.2mm]},draw=beamerblue!65,line width=.75pt},
+edge label/.style={font=\sffamily\fontsize{6}{7}\selectfont,text=black,align=center,inner sep=0pt}}
+\newcommand{\heading}[1]{{\bfseries\fontsize{8.5}{10}\selectfont #1}}

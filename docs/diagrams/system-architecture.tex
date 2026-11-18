@@ -1,0 +1,17 @@
+\documentclass[tikz,border=0pt]{standalone}
+\input{diagram-style.tex}
+\begin{document}
+\begin{tikzpicture}[x=1mm,y=1mm]
+  \path[use as bounding box,fill=white] (-14.5,-9.5) rectangle (110.5,14);
+  \node[architecture] (n0) at (0,0) {\heading{MovieLens}\\[1mm]CSV files};
+  \node[architecture] (n1) at (32,0) {\heading{MongoDB}\\[1mm]records and\\summaries};
+  \node[architecture] (n2) at (64,0) {\heading{Flask}\\[1mm]JSON API};
+  \node[architecture] (n3) at (96,0) {\heading{Browser}\\[1mm]Chart.js};
+  \draw[flow] (n0.east) -- (n1.west);
+  \draw[flow] (n1.east) -- (n2.west);
+  \draw[flow] (n2.east) -- (n3.west);
+  \node[edge label] at (16,11.3) {Python loader};
+  \node[edge label] at (48,11.3) {query};
+  \node[edge label] at (80,11.3) {render};
+\end{tikzpicture}
+\end{document}

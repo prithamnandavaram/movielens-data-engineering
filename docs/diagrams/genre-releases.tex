@@ -1,0 +1,12 @@
+\documentclass[tikz,border=0pt]{standalone}
+\input{diagram-style.tex}
+\begin{document}
+\begin{tikzpicture}[x=1mm,y=1mm]
+  \path[use as bounding box,fill=white] (-18,-9.5) rectangle (100,9.5);
+  \node[block] (n0) at (0,0) {\heading{Filter year}\\[1mm]year = 1995};
+  \node[block] (n1) at (41,0) {\heading{Expand genres}\\[1mm]one entry per\\membership};
+  \node[block] (n2) at (82,0) {\heading{Count and sort}\\[1mm]largest genre first};
+  \draw[flow] (n0.east) -- (n1.west);
+  \draw[flow] (n1.east) -- (n2.west);
+\end{tikzpicture}
+\end{document}
