@@ -5,3 +5,8 @@ venv/
 data/
 *.zip
 .DS_Store
+
+# Presentation generators & build artifacts
+presentation/generators/
+screenshots/extracted/
+*.typ
