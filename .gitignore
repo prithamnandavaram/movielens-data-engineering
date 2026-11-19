@@ -8,5 +8,6 @@ data/
 
 # Presentation generators & build artifacts
 presentation/generators/
+presentation/images/
 screenshots/extracted/
 *.typ
